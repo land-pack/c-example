@@ -1,8 +1,15 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include <time.h>
+
+// if LUA_VERSION_NUM >= 502
 #include <lua5.2/lua.h>
 #include <lua5.2/lauxlib.h>
+// else
+/*
+#include <lua.h>
+#include <lauxlib.h>
+*/
 
 //微秒
 static int getmicrosecond(lua_State *L) {
@@ -25,7 +32,6 @@ static int getmillisecond(lua_State *L) {
 
 
 int luaopen_ktime(lua_State *L) {
-  luaL_checkversion(L);
 
   luaL_Reg l[] = {
     {"getmillisecond", getmillisecond},
@@ -34,5 +40,16 @@ int luaopen_ktime(lua_State *L) {
   };
 
   luaL_newlib(L, l);
+	#if LUA_VERSION_NUM >= 502
+		luaL_newlib(L, l);
+		
+		// Or second way
+		/*
+		lua_newtable(L);
+		luaL_setfuncs(L, heyfuncs, 0);
+		*/
+	#else
+    	luaL_register(L, "ktime", l);
+	#endif
   return 1;
 }
