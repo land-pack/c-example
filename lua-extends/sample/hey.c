@@ -4,7 +4,17 @@
 
 
 int hey(lua_State * L){
-    printf("My First Lua Extention in C\n");
+	size_t msg_len = 0;
+	unsigned int arguments;
+
+	char * s;
+	int i;
+
+	arguments = lua_gettop(L);
+	for(i=2; i<= arguments; i++){
+		s = (char*)lua_tolstring(L, i, &msg_len);
+		printf("Welcome | %s\n", s);
+	}
     return 0;
 }
 
